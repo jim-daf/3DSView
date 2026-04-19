@@ -1,5 +1,6 @@
 package eu.livotov.labs.android.d3s;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -72,6 +73,7 @@ public class D3SView extends WebView {
         initUI();
     }
 
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void initUI() {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setBuiltInZoomControls(true);

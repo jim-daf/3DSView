@@ -6,9 +6,6 @@ import androidx.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
 
 /**
  * Utilities to find 3DS values in ACS webpages.
@@ -18,12 +15,12 @@ final class D3SRegexUtils {
     /**
      * Pattern to find the value of an attribute named value from an html tag with an attribute named name and a value of MD.
      */
-    private static final Pattern mdFinder = compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"MD\"[^<>]+?>", DOTALL | CASE_INSENSITIVE);
+    private static final Pattern mdFinder = Pattern.compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"MD\"[^<>]+?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     /**
      * Pattern to find the value of an attribute named value from an html tag with an attribute named name and a value of PaRes.
      */
-    private static final Pattern paresFinder = compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"PaRes\"[^<>]+?>", DOTALL | CASE_INSENSITIVE);
+    private static final Pattern paresFinder = Pattern.compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"PaRes\"[^<>]+?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     /**
      * Pattern to find the value of an attribute named value from an html tag with an attribute named name and a value of CRes.
