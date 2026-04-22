@@ -75,6 +75,9 @@ public class D3SView extends WebView {
     private void initUI() {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setBuiltInZoomControls(true);
+        // Render bank pages at their native scale so they are not auto zoomed in.
+        getSettings().setUseWideViewPort(true);
+        getSettings().setLoadWithOverviewMode(true);
         addJavascriptInterface(new D3SJSInterface(), JavaScriptNS);
 
         setWebViewClient(new WebViewClient() {
