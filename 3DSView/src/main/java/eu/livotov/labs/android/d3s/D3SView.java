@@ -74,6 +74,7 @@ public class D3SView extends WebView {
 
     private void initUI() {
         getSettings().setJavaScriptEnabled(true);
+        getSettings().setDomStorageEnabled(true);
         getSettings().setBuiltInZoomControls(true);
         addJavascriptInterface(new D3SJSInterface(), JavaScriptNS);
 
