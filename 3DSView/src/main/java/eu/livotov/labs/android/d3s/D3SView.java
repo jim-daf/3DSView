@@ -187,6 +187,10 @@ public class D3SView extends WebView {
     }
 
     private void match3DSV1Parameters(String html) {
+        // Some banks render an interstitial pre-auth form first that contains MD,
+        // PaReq and TermUrl but no PaRes. Skip those so we do not call back early.
+        if (D3SRegexUtils.findPaReq(html) != null) return;
+
         // Try and find the MD and PaRes form elements in the supplied html
         final String md = D3SRegexUtils.findMd(html);
         if (md == null) return;
