@@ -8,6 +8,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -84,14 +85,16 @@ public class D3SView extends WebView {
                 if (isPostbackUrl(url)) {
                     // Wait for the form data to be processed in the other thread.
                     // 1.5s should be more than enough
-                    //
-                    // If for whatever reason the form data isn't captured successfully, this carries on and posts to
-                    // the callback URL (AKA postback URL)
                     try {
                         Thread.sleep(1500);
                     } catch (InterruptedException e) {
                         // Ignore
                     }
+                    // The default postback URL is a real host (for example google.com)
+                    // and the ACS form payload can be large enough to trigger a 413
+                    // error from that host. Return an empty document so the request
+                    // never actually leaves the device.
+                    return new WebResourceResponse("text/html", "UTF-8", new ByteArrayInputStream(new byte[0]));
                 }
                 return null;
             }
