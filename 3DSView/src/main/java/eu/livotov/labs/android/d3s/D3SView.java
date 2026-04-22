@@ -1,10 +1,14 @@
 package eu.livotov.labs.android.d3s;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -75,6 +79,9 @@ public class D3SView extends WebView {
     private void initUI() {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setBuiltInZoomControls(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        }
         addJavascriptInterface(new D3SJSInterface(), JavaScriptNS);
 
         setWebViewClient(new WebViewClient() {
@@ -114,6 +121,20 @@ public class D3SView extends WebView {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 if (!isPostbackUrl(failingUrl)) {
                     authorizationListener.onAuthorizationWebPageLoadingError(errorCode, description, failingUrl);
+                }
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                // Forward HTTP errors from the gateway (for example Stripe) so callers
+                // can react to a non 2xx response instead of seeing a blank screen.
+                String failingUrl = request.getUrl().toString();
+                if (isPostbackUrl(failingUrl)) return;
+                int status = errorResponse.getStatusCode();
+                String reason = errorResponse.getReasonPhrase();
+                Log.w("D3SView", "HTTP " + status + " " + reason + " for " + failingUrl);
+                if (authorizationListener != null) {
+                    authorizationListener.onAuthorizationWebPageLoadingError(status, reason, failingUrl);
                 }
             }
 
