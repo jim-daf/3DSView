@@ -26,6 +26,12 @@ final class D3SRegexUtils {
     private static final Pattern paresFinder = compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"PaRes\"[^<>]+?>", DOTALL | CASE_INSENSITIVE);
 
     /**
+     * Pattern to find a PaReq input. Used to detect pre-auth forms that should not
+     * be treated as the final ACS response.
+     */
+    private static final Pattern paReqFinder = compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"PaReq\"[^<>]+?>", DOTALL | CASE_INSENSITIVE);
+
+    /**
      * Pattern to find the value of an attribute named value from an html tag with an attribute named name and a value of CRes.
      */
     private static final Pattern cresFinder = Pattern.compile("<input(?=[^<>]+?value=\"([^\"]+?)\")[^<>]+?name=\"CRes\"[^<>]+?>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -64,6 +70,21 @@ final class D3SRegexUtils {
      * @param html String representation of the html page to search within.
      * @return PaRes or null if not found
      */
+    /**
+     * Returns the PaReq value if present, otherwise null. Use this to detect a
+     * pre-auth form before treating the page as the ACS callback.
+     */
+    @Nullable
+    static String findPaReq(@NonNull String html) {
+        if (html.trim().isEmpty()) return null;
+
+        Matcher matcher = paReqFinder.matcher(html);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
     @Nullable
     static String findPaRes(@NonNull String html) {
         if (html.trim().isEmpty()) return null;
